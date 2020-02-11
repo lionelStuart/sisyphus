@@ -1,6 +1,10 @@
 package routers
 
 import (
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+	_ "sisyphus/docs"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	v1 "sisyphus/routers/api/v1"
@@ -26,6 +30,8 @@ func InitRouters(engine *gin.Engine) error {
 		MaxAge: 12 * time.Hour,
 	}))
 
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	engine.GET("/ping", pong)
 	apiv1 := engine.Group("/v1")
 	//apiv1.Use()
@@ -37,12 +43,22 @@ func InitRouters(engine *gin.Engine) error {
 
 	articles := apiv1.Group("articles")
 	{
+		articles.GET("/", articleCtrl.GetArticles)
+		articles.POST("/", articleCtrl.AddArticles)
 		articles.GET("/:id", articleCtrl.GetArticle)
+		articles.PUT("/:id", articleCtrl.EditArticle)
+		articles.DELETE("/:id", articleCtrl.DeleteArticle)
 	}
 
 	return nil
 }
 
+// @获取指定ID记录
+// @Description get record by ID
+// @Accept  json
+// @Produce json
+// @Param   some_id     path    int     true        "userId"
+// @Success 200 {string} string	"ok"
 func pong(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"msg": "pong",

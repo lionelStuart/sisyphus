@@ -30,7 +30,7 @@ func NewServer(handler *gin.Engine) *http.Server {
 // @title 测试
 // @version 0.0.1
 // @description  测试
-// @BasePath /api/v1/
+// @BasePath /v1/
 func main() {
 	//r := gin.Default()
 	//r.GET("/ping", func(c *gin.Context) {
@@ -39,6 +39,7 @@ func main() {
 	//	})
 	//})
 	//r.Run() // listen and serve on 0.0.0.0:8080
+	gin.SetMode("debug")
 	e := gin.New()
 	// c := buildContainer()
 	models.InitModel()

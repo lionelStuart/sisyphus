@@ -10,7 +10,7 @@ type BlogController struct {
 }
 
 // @获取指定ID记录
-// @Description get record by ID
+// @Description tag
 // @Accept  json
 // @Produce json
 // @Param   some_id     path    int     true        "userId"

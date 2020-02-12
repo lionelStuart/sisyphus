@@ -53,12 +53,6 @@ func InitRouters(engine *gin.Engine) error {
 	return nil
 }
 
-// @获取指定ID记录
-// @Description get record by ID
-// @Accept  json
-// @Produce json
-// @Param   some_id     path    int     true        "userId"
-// @Success 200 {string} string	"ok"
 func pong(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"msg": "pong",

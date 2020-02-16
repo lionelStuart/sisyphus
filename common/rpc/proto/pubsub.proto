@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package Hello;
+
+import "hello.proto";
+
+service PubSubService{
+    rpc Publish (String) returns (String);
+    rpc Subscribe (String) returns (stream String);
+}
+
+
+

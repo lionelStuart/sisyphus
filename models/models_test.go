@@ -1,44 +1,81 @@
 package models
 
 import (
+	. "github.com/smartystreets/goconvey/convey"
+	"sisyphus/common/setting"
 	"testing"
 )
 
-func TestInitModel(t *testing.T) {
-	if err := InitModel(); err != nil {
-		t.Error(err)
-	}
+func setupSuite() {
+	path := `D:\PHOENIX\Documents\WORKSPACE\Go\GO_WORKSPACE\sisyphus\conf\app.ini`
+	setting.Setup(path)
+	Setup()
 }
 
-func setUp() {
-	if err := InitModel(); err != nil {
-		panic(err)
-	}
+func TestExistArticleByID(t *testing.T) {
+
+	Convey("setup", t, func() {
+		setupSuite()
+
+		Convey("test not exist article", func() {
+			ok, err := ExistArticleByID(101)
+			So(ok, ShouldBeFalse)
+			So(err, ShouldBeNil)
+		})
+
+	})
+
 }
 
-func TestAddCategory(t *testing.T) {
-	if err := InitModel(); err != nil {
-		t.Error(err)
-	}
+func TestAddArticle(t *testing.T) {
+	Convey("setup", t, func() {
+		setupSuite()
 
-	tests := []*Category{
-		{
-			Uid:  1,
-			Name: `娱乐`,
-		},
-		{
-			Uid:  2,
-			Name: `教育`,
-		},
-		{
-			Uid:  3,
-			Name: `科技`,
-		},
-	}
-	for _, v := range tests {
-		if err := AddCategory(v); err != nil {
-			t.Error(err)
-		}
-	}
+		Convey("test add article", func() {
+			a := map[string]interface{}{
+				"tag_id":          2,
+				"title":           "test article title",
+				"desc":            "desc",
+				"content":         "content",
+				"created_by":      "jim",
+				"cover_image_url": "blank",
+				"state":           0,
+			}
 
+			err := AddArticle(a)
+			So(err, ShouldBeNil)
+		})
+
+	})
+}
+
+func TestAddTag(t *testing.T) {
+	Convey("setup", t, func() {
+		setupSuite()
+
+		Convey("test add tag", func() {
+			in := []struct {
+				name     string
+				state    int
+				createBy string
+			}{
+				{
+					name:     "sport",
+					state:    0,
+					createBy: "admin",
+				},
+				{
+					name:     "movie",
+					state:    0,
+					createBy: "admin",
+				},
+			}
+
+			for _, i := range in {
+				err := AddTag(i.name, i.state, i.createBy)
+				So(err, ShouldBeNil)
+			}
+		})
+
+	})
 }

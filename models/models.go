@@ -3,12 +3,14 @@ package models
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"sisyphus/common/db"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"log"
+	"sisyphus/common/setting"
 	"time"
 )
 
 var (
-	DB  *gorm.DB
+	db  *gorm.DB
 	err error
 )
 
@@ -19,32 +21,36 @@ type Model struct {
 	DeletedOn  int `json:"deleted_on"`
 }
 
-func InitModel() error {
-	DB, err = db.NewDB(db.Conf{
-		Type:     "mysql",
-		User:     "root",
-		Password: "neon1234",
-		Host:     "127.0.0.1:3309",
-		Name:     "sisyphus",
-	})
+func Setup() {
+	conf := setting.DefaultDBSetting
+	fmt.Printf("conf %#v \n", conf)
+	db, err = gorm.Open(conf.Type,
+		fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+			conf.User,
+			conf.Password,
+			conf.Host,
+			conf.Name,
+		))
+
 	if err != nil {
-		return err
+		log.Fatalf("model.setup err: %v", err)
 	}
 
-	DB.SingularTable(true)
-	DB.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
-	DB.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
-	DB.Callback().Delete().Replace("gorm:delete", deleteCallback)
-	DB.DB().SetMaxIdleConns(10)
-	DB.DB().SetMaxOpenConns(100)
+	// 修改表名前缀
+	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+		return conf.TablePrefix + defaultTableName
+	}
 
-	DB.AutoMigrate(&Article{}, &Tag{})
+	// 非负数形式
+	db.SingularTable(true)
 
-	return nil
+	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampWhenCreate)
+	db.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampWhenUpdate)
+	db.Callback().Delete().Replace("gorm:delete", deleteCallback)
+
 }
 
-// updateTimeStampForCreateCallback will set `CreatedOn`, `ModifiedOn` when creating
-func updateTimeStampForCreateCallback(scope *gorm.Scope) {
+func updateTimeStampWhenCreate(scope *gorm.Scope) {
 	if !scope.HasError() {
 		nowTime := time.Now().Unix()
 		if createTimeField, ok := scope.FieldByName("CreatedOn"); ok {
@@ -61,14 +67,12 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 	}
 }
 
-// updateTimeStampForUpdateCallback will set `ModifiedOn` when updating
-func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
+func updateTimeStampWhenUpdate(scope *gorm.Scope) {
 	if _, ok := scope.Get("gorm:update_column"); !ok {
 		scope.SetColumn("ModifiedOn", time.Now().Unix())
 	}
 }
 
-// deleteCallback will set `DeletedOn` where deleting
 func deleteCallback(scope *gorm.Scope) {
 	if !scope.HasError() {
 		var extraOption string
@@ -98,7 +102,6 @@ func deleteCallback(scope *gorm.Scope) {
 	}
 }
 
-// addExtraSpaceIfExist adds a separator
 func addExtraSpaceIfExist(str string) string {
 	if str != "" {
 		return " " + str

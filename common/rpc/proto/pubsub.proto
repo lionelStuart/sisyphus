@@ -4,9 +4,34 @@ package Hello;
 
 import "hello.proto";
 
-service PubSubService{
-    rpc Publish (String) returns (String);
-    rpc Subscribe (String) returns (stream String);
+message Message {
+
+    string uuid = 1;
+
+    enum MessageType{
+        CHAT_CTRL = 0;
+        CHAT_DATA = 1;
+    }
+
+    MessageType type = 2;
+
+    string data = 3;
+}
+
+message MessageResp {
+    string  uuid = 1;
+    int32   code = 2;
+    string  data = 3;
+}
+
+message TopicRequest {
+    string field = 1;
+    string uuid =  2;
+}
+
+service PubSubService {
+    rpc Publish (Message) returns (MessageResp);
+    rpc Subscribe (TopicRequest) returns (stream MessageResp);
 }
 
 

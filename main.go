@@ -1,17 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"sisyphus/common/setting"
 	"sisyphus/models"
 	"sisyphus/routers"
 )
 
-func NewServer(handler *gin.Engine) *http.Server {
+func NewServer(handler *gin.Engine, conf *setting.Server) *http.Server {
 	maxHeaderBytes := 1 << 20
 
 	return &http.Server{
-		Addr:           "127.0.0.1:8079",
+		Addr:           fmt.Sprintf("%s:%d", "0.0.0.0", conf.HttpPort),
 		Handler:        handler,
 		MaxHeaderBytes: maxHeaderBytes,
 	}
@@ -27,9 +29,26 @@ func NewServer(handler *gin.Engine) *http.Server {
 //	return container
 //}
 
-// @title 测试
-// @version 0.0.1
-// @description  测试
+func init() {
+	path := `conf/app.ini`
+	setting.Setup(path)
+	models.Setup()
+
+}
+
+// @title 测试 gin API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
 // @BasePath /v1/
 func main() {
 	//r := gin.Default()
@@ -42,10 +61,9 @@ func main() {
 	gin.SetMode("debug")
 	e := gin.New()
 	// c := buildContainer()
-	models.InitModel()
 	routers.InitRouters(e)
 
-	s := NewServer(e)
+	s := NewServer(e, setting.GetServerConf())
 
 	s.ListenAndServe()
 

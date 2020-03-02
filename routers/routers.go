@@ -4,6 +4,7 @@ import (
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	_ "sisyphus/docs"
+	"sisyphus/routers/api"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,8 @@ import (
 var (
 	blogCtrl    v1.BlogController
 	articleCtrl v1.ArticleController
+	tagCtrl     v1.TagController
+	authCtrl    api.AuthController
 )
 
 func InitRouters(engine *gin.Engine) error {
@@ -33,7 +36,14 @@ func InitRouters(engine *gin.Engine) error {
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	engine.GET("/ping", pong)
+
+	auth := engine.Group("/auth")
+	{
+		auth.GET("/", authCtrl.GetAuth)
+	}
+
 	apiv1 := engine.Group("/v1")
+
 	//apiv1.Use()
 	blog := apiv1.Group("blog")
 	{
@@ -48,6 +58,14 @@ func InitRouters(engine *gin.Engine) error {
 		articles.GET("/:id", articleCtrl.GetArticle)
 		articles.PUT("/:id", articleCtrl.EditArticle)
 		articles.DELETE("/:id", articleCtrl.DeleteArticle)
+	}
+
+	tags := apiv1.Group("tags")
+	{
+		tags.GET("/", tagCtrl.GetTags)
+		tags.POST("/", tagCtrl.AddTag)
+		tags.PUT("/:id", tagCtrl.EditTag)
+		tags.DELETE("/:id", tagCtrl.DeleteTag)
 	}
 
 	return nil

@@ -37,12 +37,12 @@ func InitRouters(engine *gin.Engine) error {
 
 	engine.GET("/ping", pong)
 
-	auth := engine.Group("/auth")
+	apiv1 := engine.Group("/v1")
+
+	auth := apiv1.Group("/auth")
 	{
 		auth.GET("/", authCtrl.GetAuth)
 	}
-
-	apiv1 := engine.Group("/v1")
 
 	//apiv1.Use()
 	blog := apiv1.Group("blog")

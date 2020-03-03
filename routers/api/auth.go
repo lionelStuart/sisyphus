@@ -18,6 +18,14 @@ type auth struct {
 type AuthController struct {
 }
 
+// @Summary GetAuth
+// @Tags Auth
+// @Produce  json
+// @Param username query string true "Username"
+// @Param password query string true "Password"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /auth [get]
 func (c *AuthController) GetAuth(ctx *gin.Context) {
 	var (
 		ginX  = app.GinX{C: ctx}

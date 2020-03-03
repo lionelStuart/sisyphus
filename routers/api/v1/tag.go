@@ -13,6 +13,14 @@ import (
 type TagController struct {
 }
 
+// @Summary Get multiple article tags
+// @Tags TagController
+// @Produce  json
+// @Param name query string false "Name"
+// @Param state query int false "State"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tags [get]
 func (t *TagController) GetTags(ctx *gin.Context) {
 	ginX := app.GinX{C: ctx}
 	name := ctx.Query("name")
@@ -53,6 +61,13 @@ type AddTagForm struct {
 	State     int    `form:"state" valid:"Range(0,1)"`
 }
 
+// @Summary Add article tag
+// @Tags TagController
+// @Produce  json
+// @Param form body v1.AddTagForm true "AddTagForm"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tags [post]
 func (t *TagController) AddTag(ctx *gin.Context) {
 	var (
 		ginX = app.GinX{C: ctx}
@@ -98,6 +113,14 @@ type EditTagForm struct {
 	State      int    `form:"state" valid:"Range(0,1)"`
 }
 
+// @Summary Update article tag
+// @Tags TagController
+// @Produce  json
+// @Param id path int true "ID"
+// @Param form body v1.EditTagForm true "EditTagForm"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tags/{id} [put]
 func (t *TagController) EditTag(ctx *gin.Context) {
 	var (
 		ginX = app.GinX{C: ctx}
@@ -137,6 +160,13 @@ func (t *TagController) EditTag(ctx *gin.Context) {
 	ginX.JSON(http.StatusOK, ecode.SUCCESS, nil)
 }
 
+// @Summary Delete article tag
+// @Tags TagController
+// @Produce  json
+// @Param id path int true "ID"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tags/{id} [delete]
 func (t *TagController) DeleteTag(ctx *gin.Context) {
 	var (
 		ginX  = app.GinX{C: ctx}
@@ -155,10 +185,13 @@ func (t *TagController) DeleteTag(ctx *gin.Context) {
 	if err != nil {
 		ginX.JSON(http.StatusBadRequest, ecode.ERROR_EXIST_TAG_FAIL, nil)
 		return
+	} else if !exists {
+		ginX.JSON(http.StatusOK, ecode.ERROR_NOT_EXIST_TAG, nil)
+		return
 	}
 
-	if !exists {
-		ginX.JSON(http.StatusOK, ecode.ERROR_NOT_EXIST_TAG, nil)
+	if err := tagSvc.Delete(); err != nil {
+		ginX.JSON(http.StatusInternalServerError, ecode.ERROR_DELETE_TAG_FAIL, nil)
 		return
 	}
 

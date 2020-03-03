@@ -72,7 +72,7 @@ func (t *Tag) getMaps() map[string]interface{} {
 	maps["deleted_on"] = 0
 
 	if t.Name != "" {
-		maps["names"] = t.Name
+		maps["name"] = t.Name
 	}
 
 	if t.State > 0 {

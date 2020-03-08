@@ -74,7 +74,7 @@ func (c *Conn) Exists(key string) (bool, error) {
 		return false, err
 	}
 
-	log.Info("exists cache: ", key)
+	log.Info("exists cache: ", key, "v: ", exist)
 	return exist, nil
 }
 

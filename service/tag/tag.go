@@ -1,8 +1,12 @@
 package tag
 
 import (
+	"encoding/json"
+	"github.com/prometheus/common/log"
 	"io"
+	"sisyphus/common/redis"
 	"sisyphus/models"
+	cacheService "sisyphus/service/cache"
 )
 
 type Tag struct {
@@ -50,12 +54,32 @@ func (t *Tag) Count() (int, error) {
 
 func (t *Tag) GetAll() ([]models.Tag, error) {
 	//
+	cacheSvc := cacheService.Tag{
+		State: t.State,
+
+		PageNum:  t.PageNum,
+		PageSize: t.PageSize,
+	}
+	key := cacheSvc.GetTagsKey()
+	if exist, _ := redis.DefaultConn.Exists(key); exist {
+		data, err := redis.DefaultConn.Get(key)
+		if err != nil {
+			log.Info(err)
+		} else {
+			var cache []models.Tag
+			json.Unmarshal(data, &cache)
+			return cache, nil
+		}
+	}
 
 	tags, err := models.GetTags(t.PageNum, t.PageSize, t.getMaps())
 	if err != nil {
 		return nil, err
 	}
-	//
+	err = redis.DefaultConn.Set(key, tags, 3600)
+	if err != nil {
+		//TODO
+	}
 	return tags, nil
 }
 

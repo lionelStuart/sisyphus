@@ -1,6 +1,6 @@
-##sisyphus
+## sisyphus
 
-**blog test**
+**blog practice**
 
 ### features
 
@@ -17,7 +17,7 @@
 - add test
 
 ### Reference
--[go-gin-example](github.com/EDDYCJY/go-gin-example)
+- [go-gin-example](github.com/EDDYCJY/go-gin-example)
 
 
 

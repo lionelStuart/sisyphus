@@ -2,6 +2,7 @@ package tag
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
+	"sisyphus/common/redis"
 	"sisyphus/common/setting"
 	"sisyphus/models"
 	"testing"
@@ -11,6 +12,7 @@ func setupSuite() {
 	path := `D:\PHOENIX\Documents\WORKSPACE\Go\GO_WORKSPACE\sisyphus\conf\app.ini`
 	setting.Setup(path)
 	models.Setup()
+	redis.SetUp()
 }
 
 func TestExist(t *testing.T) {

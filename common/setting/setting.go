@@ -22,9 +22,18 @@ type Database struct {
 	TablePrefix string
 }
 
+type Redis struct {
+	Host        string
+	Password    string
+	MaxIdle     int
+	MaxActive   int
+	IdleTimeout time.Duration
+}
+
 var (
 	DefaultServerSetting = &Server{}
 	DefaultDBSetting     = &Database{}
+	DefaultRedisSetting  = &Redis{}
 
 	cfg *ini.File
 	err error
@@ -38,6 +47,10 @@ func GetServerConf() *Server {
 	return DefaultServerSetting
 }
 
+func GetRedisConf() *Redis {
+	return DefaultRedisSetting
+}
+
 func Setup(path string) {
 
 	// path = `conf/app.ini`
@@ -48,6 +61,7 @@ func Setup(path string) {
 
 	mapTo("server", DefaultServerSetting)
 	mapTo("database", DefaultDBSetting)
+	mapTo("redis", DefaultRedisSetting)
 
 	log.Info("== setup conf ==")
 }

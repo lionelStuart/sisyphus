@@ -1,6 +1,12 @@
 package article
 
-import "sisyphus/models"
+import (
+	"encoding/json"
+	"github.com/prometheus/common/log"
+	"sisyphus/common/redis"
+	"sisyphus/models"
+)
+import cacheService "sisyphus/service/cache"
 
 type Article struct {
 	ID            int
@@ -47,23 +53,64 @@ func (a *Article) Edit() error {
 }
 
 func (a *Article) Get() (*models.Article, error) {
-	//
-
-	//
+	// use cache
+	cacheSvc := cacheService.Article{ID: a.ID}
+	key := cacheSvc.GetArticleKey()
+	if exist, _ := redis.DefaultConn.Exists(key); exist {
+		data, err := redis.DefaultConn.Get(key)
+		if err != nil {
+			log.Info(err)
+		} else {
+			var cache *models.Article
+			json.Unmarshal(data, &cache)
+			return cache, nil
+		}
+	}
+	// use db
 	article, err := models.GetArticle(a.ID)
 	if err != nil {
 		return nil, err
+	}
+
+	//once get article by db, cache it
+	err = redis.DefaultConn.Set(key, article, 3000)
+	if err != nil {
+		//do nothing
 	}
 
 	return article, nil
 }
 
 func (a *Article) GetAll() ([]models.Article, error) {
-
+	// use cache
+	cacheSvc := cacheService.Article{
+		TagID:    a.TagID,
+		State:    a.State,
+		PageNum:  a.PageNum,
+		PageSize: a.PageSize,
+	}
+	key := cacheSvc.GetArticlesKey()
+	if exist, _ := redis.DefaultConn.Exists(key); exist {
+		data, err := redis.DefaultConn.Get(key)
+		if err != nil {
+			log.Info(err)
+		} else {
+			var cache []models.Article
+			json.Unmarshal(data, &cache)
+			return cache, nil
+		}
+	}
+	// use db
 	articles, err := models.GetArticles(a.PageNum, a.PageSize, a.GetMaps())
 	if err != nil {
 		return nil, err
 	}
+	//once get article by db, cache it
+	err = redis.DefaultConn.Set(key, articles, 3000)
+	if err != nil {
+		//do nothing
+	}
+
 	return articles, nil
 }
 

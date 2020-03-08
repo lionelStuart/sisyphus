@@ -1,13 +1,12 @@
 package routers
 
 import (
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
-	_ "sisyphus/docs"
-	"sisyphus/routers/api"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"sisyphus/common/setting"
+	_ "sisyphus/docs"
 	v1 "sisyphus/routers/api/v1"
 	"time"
 )
@@ -16,7 +15,8 @@ var (
 	blogCtrl    v1.BlogController
 	articleCtrl v1.ArticleController
 	tagCtrl     v1.TagController
-	authCtrl    api.AuthController
+	authCtrl    v1.AuthController
+	fileCtrl    v1.FileController
 )
 
 func InitRouters(engine *gin.Engine) error {
@@ -42,6 +42,13 @@ func InitRouters(engine *gin.Engine) error {
 	auth := apiv1.Group("/auth")
 	{
 		auth.GET("/", authCtrl.GetAuth)
+	}
+
+	file := engine.Group("/file")
+	{
+		file.POST("/upload", fileCtrl.Upload)
+		//file.StaticFS("/static",http.Dir(setting.GetAppConf().StaticRootPath))
+		file.Static("/static", setting.GetAppConf().StaticRootPath)
 	}
 
 	//apiv1.Use()

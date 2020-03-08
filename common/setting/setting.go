@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+type App struct {
+	StaticRootPath string
+	PrefixUrl      string
+
+	ImageSavePath  string
+	ImageMaxSize   int
+	ImageAllowExts []string
+}
+
 type Server struct {
 	RunMode      string
 	HttpPort     int
@@ -34,6 +43,7 @@ var (
 	DefaultServerSetting = &Server{}
 	DefaultDBSetting     = &Database{}
 	DefaultRedisSetting  = &Redis{}
+	DefaultAppSetting    = &App{}
 
 	cfg *ini.File
 	err error
@@ -51,6 +61,10 @@ func GetRedisConf() *Redis {
 	return DefaultRedisSetting
 }
 
+func GetAppConf() *App {
+	return DefaultAppSetting
+}
+
 func Setup(path string) {
 
 	// path = `conf/app.ini`
@@ -62,6 +76,7 @@ func Setup(path string) {
 	mapTo("server", DefaultServerSetting)
 	mapTo("database", DefaultDBSetting)
 	mapTo("redis", DefaultRedisSetting)
+	mapTo("app", DefaultAppSetting)
 
 	log.Info("== setup conf ==")
 }

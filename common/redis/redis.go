@@ -26,10 +26,12 @@ func NewConn(conf *setting.Redis) *Conn {
 		Dial: func() (redis.Conn, error) {
 			c, err := redis.Dial("tcp", conf.Host)
 			if err != nil {
+				log.Error(err)
 				return nil, err
 			}
 			if conf.Password != "" {
 				if _, err := c.Do("AUTH", conf.Password); err != nil {
+					log.Error(err)
 					c.Close()
 					return nil, err
 				}
@@ -38,6 +40,7 @@ func NewConn(conf *setting.Redis) *Conn {
 		},
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
 			_, err := c.Do("PING")
+			log.Error(err)
 			return err
 		},
 	}

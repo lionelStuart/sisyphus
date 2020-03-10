@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"sisyphus/common/redis"
 	"sisyphus/common/setting"
 	"sisyphus/models"
 	"sisyphus/routers"
@@ -33,6 +34,7 @@ func init() {
 	path := `conf/app.ini`
 	setting.Setup(path)
 	models.Setup()
+	redis.SetUp()
 
 }
 

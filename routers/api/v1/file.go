@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/common/log"
 	"net/http"
@@ -14,8 +13,14 @@ import (
 type FileController struct {
 }
 
+// @Summary UploadFile
+// @Tags FileSys
+// @Produce  json
+// @Param image formData file  true "image"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /upload [post]
 func (c *FileController) Upload(ctx *gin.Context) {
-	fmt.Println("get upload")
 	ginX := app.GinX{C: ctx}
 	file, image, err := ctx.Request.FormFile("image")
 	if err != nil {

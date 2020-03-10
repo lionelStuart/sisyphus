@@ -1,0 +1,26 @@
+version: '2'
+
+networks:
+  basic:
+
+services:
+  web:
+   container_name: sisyphus_web
+   image: phoenix/sisyphus:v1.0
+   ports:
+    - "8080:8080"
+   volumes:
+    - /home/phoenix/workspace/gowork/sisyphus/test:/app/static
+    - /home/phoenix/workspace/gowork/sisyphus/conf/app.ini:/app/conf/app.ini
+   networks:
+    - basic
+  redis:
+   container_name: sisyphus_redis
+   image: redis:latest
+   ports:
+    - "6379:6379"
+   volumes:
+    - /data/redis:/data
+    - /home/phoenix/workspace/gowork/sisyphus/conf/redis.conf:/etc/redis/redis.conf
+   command: 
+    redis-server /etc/redis/redis.conf

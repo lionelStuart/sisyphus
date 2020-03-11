@@ -30,6 +30,7 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jonboulle/clockwork v0.1.0 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
+	github.com/mitchellh/mapstructure v1.1.2
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.4.1 // indirect
 	github.com/prometheus/common v0.9.1

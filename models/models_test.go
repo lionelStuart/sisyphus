@@ -2,6 +2,7 @@ package models
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
+	"sisyphus/common/app"
 	"sisyphus/common/setting"
 	"testing"
 )
@@ -32,8 +33,8 @@ func TestAddArticle(t *testing.T) {
 		setupSuite()
 
 		Convey("test add article", func() {
-			a := map[string]interface{}{
-				"tag_id":          2,
+			a := app.H{
+				"tag_id":          3,
 				"title":           "test article title",
 				"desc":            "desc",
 				"content":         "content",
@@ -75,6 +76,101 @@ func TestAddTag(t *testing.T) {
 				err := AddTag(i.name, i.state, i.createBy)
 				So(err, ShouldBeNil)
 			}
+		})
+
+	})
+}
+
+func TestAddAuth(t *testing.T) {
+	Convey("setup", t, func() {
+		setupSuite()
+
+		Convey("test add auth", func() {
+			a := app.H{
+				"username": "tom",
+				"password": "pass",
+				"email":    "tom@126.com",
+				"phone":    "130123412344",
+				"state":    0,
+				"profile": app.H{
+					"nickname": "big tom",
+					"age":      15,
+					"gender":   "M",
+					"address":  "king street",
+				},
+			}
+
+			err := AddAuth(a)
+			So(err, ShouldBeNil)
+		})
+
+	})
+}
+
+func TestGetAuthOrProfile(t *testing.T) {
+	Convey("setup", t, func() {
+		setupSuite()
+
+		Convey("test get auth", func() {
+			id := 7
+			auth, err := GetAuthById(id)
+			So(err, ShouldBeNil)
+			So(auth.ID, ShouldEqual, id)
+			So(auth.Profile.ID, ShouldEqual, 0)
+			t.Logf("%+v", auth)
+		})
+
+		Convey("test get profile", func() {
+			id := 7
+			profile, err := GetProfileById(id)
+			So(err, ShouldBeNil)
+			So(profile.ID, ShouldEqual, id)
+			t.Logf("%+v", profile)
+		})
+	})
+}
+
+func TestExistAuthCondition(t *testing.T) {
+	Convey("setup", t, func() {
+		setupSuite()
+
+		Convey("test one", func() {
+			cond := app.H{
+				"id": 7,
+			}
+			exist, err := ExistAuthCondition(cond)
+			So(err, ShouldBeNil)
+			So(exist, ShouldBeTrue)
+		})
+
+		Convey("test false", func() {
+			cond := app.H{
+				"id": -100,
+			}
+			exist, err := ExistAuthCondition(cond)
+			So(err, ShouldBeNil)
+			So(exist, ShouldBeFalse)
+		})
+
+		Convey("test two", func() {
+			cond := app.H{
+				"id":       -100,
+				"username": "master",
+			}
+			exist, err := ExistAuthCondition(cond)
+			So(err, ShouldBeNil)
+			So(exist, ShouldBeTrue)
+		})
+
+		Convey("test three", func() {
+			cond := app.H{
+				"id":       -100,
+				"username": "tom",
+				"phone":    "tom@126.com",
+			}
+			exist, err := ExistAuthCondition(cond)
+			So(err, ShouldBeNil)
+			So(exist, ShouldBeTrue)
 		})
 
 	})

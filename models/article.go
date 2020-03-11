@@ -3,20 +3,21 @@ package models
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"sisyphus/common/utils"
 )
 
 type Article struct {
 	Model
 
-	TagID int `json:"tag_id" gorm:"index"`
+	TagID int `json:"tag_id" mapstructure:"tag_id" gorm:"index"`
 	Tag   Tag `json:"tag"`
 
 	Title         string `json:"title"`
 	Desc          string `json:"desc"`
 	Content       string `json:"content"`
-	CoverImageUrl string `json:"cover_image_url"`
-	CreatedBy     string `json:"created_by"`
-	ModifiedBy    string `json:"modified_by"`
+	CoverImageUrl string `json:"cover_image_url" mapstructure:"cover_image_url"`
+	CreatedBy     string `json:"created_by" mapstructure:"created_by"`
+	ModifiedBy    string `json:"modified_by" mapstructure:"modified_by"`
 	State         int    `json:"state"`
 }
 
@@ -82,15 +83,11 @@ func EditArticle(id int, data interface{}) error {
 }
 
 func AddArticle(data map[string]interface{}) error {
-	article := Article{
-		TagID:         data["tag_id"].(int),
-		Title:         data["title"].(string),
-		Desc:          data["desc"].(string),
-		Content:       data["content"].(string),
-		CreatedBy:     data["created_by"].(string),
-		State:         data["state"].(int),
-		CoverImageUrl: data["cover_image_url"].(string),
+	var article Article
+	if err := utils.MapToStruct(data, &article); err != nil {
+		return err
 	}
+
 	if err := db.Create(&article).Error; err != nil {
 		return err
 	}

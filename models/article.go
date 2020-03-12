@@ -4,22 +4,8 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"sisyphus/common/utils"
+	. "sisyphus/models/po"
 )
-
-type Article struct {
-	Model
-
-	TagID int `json:"tag_id" mapstructure:"tag_id" gorm:"index"`
-	Tag   Tag `json:"tag"`
-
-	Title         string `json:"title"`
-	Desc          string `json:"desc"`
-	Content       string `json:"content"`
-	CoverImageUrl string `json:"cover_image_url" mapstructure:"cover_image_url"`
-	CreatedBy     string `json:"created_by" mapstructure:"created_by"`
-	ModifiedBy    string `json:"modified_by" mapstructure:"modified_by"`
-	State         int    `json:"state"`
-}
 
 func ExistArticleByID(id int) (bool, error) {
 	var article Article

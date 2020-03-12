@@ -1,26 +1,11 @@
 package models
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	"sisyphus/common/utils"
+	. "sisyphus/models/po"
 	"strings"
 )
-
-type Auth struct {
-	Model
-
-	//ID       int    `gorm:"primary_key" json:"id"`
-	Uid      string `json:"uid"` //base32
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Phone    string `json:"phone"`
-	State    int    `json: "state"`
-
-	// ProfileID  int `json:"profile_id" gorm:"index"`
-	Profile Profile `json:"profile"`
-}
 
 func CheckAuth(username, password string) (bool, error) {
 	var auth Auth
@@ -71,6 +56,15 @@ func GetProfileById(id int) (*Profile, error) {
 		return nil, err
 	}
 	return &profile, nil
+}
+
+func EditAuth(id int, data interface{}) error {
+	if err := db.Model(&Auth{}).Where("id = ? AND deleted_on = ? ", id, 0).
+		Updates(data).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func ExistAuthCondition(condition map[string]interface{}) (bool, error) {

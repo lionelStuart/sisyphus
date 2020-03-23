@@ -5,6 +5,7 @@ import (
 	"github.com/prometheus/common/log"
 	"sisyphus/common/redis"
 	"sisyphus/models"
+	"sisyphus/models/po"
 )
 import cacheService "sisyphus/service/cache"
 
@@ -52,7 +53,7 @@ func (a *Article) Edit() error {
 	})
 }
 
-func (a *Article) Get() (*models.Article, error) {
+func (a *Article) Get() (*po.Article, error) {
 	// use cache
 	cacheSvc := cacheService.Article{ID: a.ID}
 	key := cacheSvc.GetArticleKey()
@@ -61,7 +62,7 @@ func (a *Article) Get() (*models.Article, error) {
 		if err != nil {
 			log.Info(err)
 		} else {
-			var cache *models.Article
+			var cache *po.Article
 			json.Unmarshal(data, &cache)
 			return cache, nil
 		}
@@ -81,7 +82,7 @@ func (a *Article) Get() (*models.Article, error) {
 	return article, nil
 }
 
-func (a *Article) GetAll() ([]models.Article, error) {
+func (a *Article) GetAll() ([]po.Article, error) {
 	// use cache
 	cacheSvc := cacheService.Article{
 		TagID:    a.TagID,
@@ -95,7 +96,7 @@ func (a *Article) GetAll() ([]models.Article, error) {
 		if err != nil {
 			log.Info(err)
 		} else {
-			var cache []models.Article
+			var cache []po.Article
 			json.Unmarshal(data, &cache)
 			return cache, nil
 		}

@@ -49,7 +49,7 @@ require (
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2 // indirect
 	golang.org/x/sys v0.0.0-20200212091648-12a6c2dcc1e4 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	golang.org/x/tools v0.0.0-20200211205636-11eff242d136 // indirect
+	golang.org/x/tools v0.0.0-20200211205636-11eff242d136
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20200212174721-66ed5ce911ce
 	google.golang.org/grpc v1.27.1

@@ -40,8 +40,8 @@ CREATE TABLE `blog_tag` (
 -- ----------------------------
 DROP TABLE IF EXISTS `blog_auth`;
 CREATE TABLE `blog_auth` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uid`  varchar(32)     DEFAULT '' COMMENT '用户可见id',
+  -- `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id`  varchar(32)      NOT NULL  COMMENT '用户可见id',
   `username` varchar(50) DEFAULT '' COMMENT '账号',
   `password` varchar(50) DEFAULT '' COMMENT '密码',
   `email`    varchar(50) DEFAULT '' COMMENT '邮箱',
@@ -62,7 +62,8 @@ INSERT INTO `blog_auth` (`id`, `username`, `password`) VALUES ('1', 'master', 't
 -- ----------------------------
 DROP TABLE IF EXISTS `blog_profile`;
 CREATE TABLE `blog_profile`(
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id`  varchar(32)      NOT NULL  COMMENT '用户可见id',
+  -- `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nickname` varchar(50) DEFAULT '' COMMENT '昵称',
   `age`      tinyint(3)  unsigned DEFAULT '0' COMMENT '年龄',
   `gender`   varchar(2)  DEFAULT 'M' COMMENT '性别',
@@ -74,3 +75,5 @@ CREATE TABLE `blog_profile`(
   `deleted_on` int(10) unsigned DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `blog_profile` (`id`, `nickname`) VALUES ('1', 'master');

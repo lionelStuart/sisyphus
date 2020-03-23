@@ -17,6 +17,7 @@ var (
 	tagCtrl     v1.TagController
 	authCtrl    v1.AuthController
 	fileCtrl    v1.FileController
+	userCtrl    v1.UserController
 )
 
 func InitRouters(engine *gin.Engine) error {
@@ -75,6 +76,10 @@ func InitRouters(engine *gin.Engine) error {
 		tags.DELETE("/:id", tagCtrl.DeleteTag)
 	}
 
+	users := apiv1.Group("users")
+	{
+		users.GET("/:id", userCtrl.GetUserProfile)
+	}
 	return nil
 }
 

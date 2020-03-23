@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"sisyphus/common/utils"
 	. "sisyphus/models/po"
@@ -15,18 +16,18 @@ func CheckAuth(username, password string) (bool, error) {
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
-	if auth.ID > 0 {
-		return true, nil
-	}
+	//if auth.ID > 0 {
+	//	return true, nil
+	//}
 	return false, nil
 }
 
-func AddAuth(data map[string]interface{}) error {
+func AddAuthProfile(data map[string]interface{}) error {
 	var auth Auth
 	if err := utils.MapToStruct(data, &auth); err != nil {
 		return err
 	}
-	auth.Uid = utils.GenBase32()
+	auth.ID = utils.GenBase32()
 
 	if err := db.Create(&auth).Error; err != nil {
 		return err
@@ -40,7 +41,7 @@ func AddAuth(data map[string]interface{}) error {
 	return nil
 }
 
-func GetAuthById(id int) (*Auth, error) {
+func GetAuthById(id string) (*Auth, error) {
 	var auth Auth
 	err := db.Where("id = ? AND deleted_on = ?", id, 0).First(&auth).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
@@ -49,16 +50,7 @@ func GetAuthById(id int) (*Auth, error) {
 	return &auth, nil
 }
 
-func GetProfileById(id int) (*Profile, error) {
-	var profile Profile
-	err := db.Where("id = ? AND deleted_on = ?", id, 0).First(&profile).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
-	}
-	return &profile, nil
-}
-
-func EditAuth(id int, data interface{}) error {
+func EditAuth(id string, data interface{}) error {
 	if err := db.Model(&Auth{}).Where("id = ? AND deleted_on = ? ", id, 0).
 		Updates(data).Error; err != nil {
 		return err
@@ -78,8 +70,25 @@ func ExistAuthCondition(condition map[string]interface{}) (bool, error) {
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
-	if auth.ID > 0 {
+	if len(auth.ID) > 0 {
 		return true, nil
 	}
+	//if auth.ID > 0 {
+	//	return true, nil
+	//}
 	return false, nil
+}
+
+func DeleteAuthProfile(id int) error {
+	var err error
+
+	if err = db.Where("id = ? AND deleted_on = ?", id, 0).Delete(Auth{}).Error; err != nil {
+		return err
+	}
+
+	if err = db.Where("id = ?", id).Delete(Profile{}).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

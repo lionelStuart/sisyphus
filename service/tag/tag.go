@@ -6,6 +6,7 @@ import (
 	"io"
 	"sisyphus/common/redis"
 	"sisyphus/models"
+	"sisyphus/models/po"
 	cacheService "sisyphus/service/cache"
 )
 
@@ -52,7 +53,7 @@ func (t *Tag) Count() (int, error) {
 	return models.GetTagTotal(t.getMaps())
 }
 
-func (t *Tag) GetAll() ([]models.Tag, error) {
+func (t *Tag) GetAll() ([]po.Tag, error) {
 	//
 	cacheSvc := cacheService.Tag{
 		State: t.State,
@@ -66,7 +67,7 @@ func (t *Tag) GetAll() ([]models.Tag, error) {
 		if err != nil {
 			log.Info(err)
 		} else {
-			var cache []models.Tag
+			var cache []po.Tag
 			json.Unmarshal(data, &cache)
 			return cache, nil
 		}

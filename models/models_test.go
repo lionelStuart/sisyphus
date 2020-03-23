@@ -100,7 +100,7 @@ func TestAddAuth(t *testing.T) {
 				},
 			}
 
-			err := AddAuth(a)
+			err := AddAuthProfile(a)
 			So(err, ShouldBeNil)
 		})
 
@@ -112,20 +112,32 @@ func TestGetAuthOrProfile(t *testing.T) {
 		setupSuite()
 
 		Convey("test get auth", func() {
-			id := 7
+			id := "1"
 			auth, err := GetAuthById(id)
 			So(err, ShouldBeNil)
 			So(auth.ID, ShouldEqual, id)
-			So(auth.Profile.ID, ShouldEqual, 0)
+			So(auth.Profile.ID, ShouldEqual, "")
 			t.Logf("%+v", auth)
 		})
 
 		Convey("test get profile", func() {
-			id := 7
+			id := "1"
 			profile, err := GetProfileById(id)
 			So(err, ShouldBeNil)
 			So(profile.ID, ShouldEqual, id)
 			t.Logf("%+v", profile)
+		})
+	})
+}
+
+func TestDeleteAuthProfile(t *testing.T) {
+	Convey("setup", t, func() {
+		setupSuite()
+
+		Convey("test get auth", func() {
+			id := 4
+			err := DeleteAuthProfile(id)
+			So(err, ShouldBeNil)
 		})
 	})
 }

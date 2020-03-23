@@ -482,7 +482,7 @@ var doc = `{
                 "tags": [
                     "UserController"
                 ],
-                "summary": "Get user profile by id",
+                "summary": "Get user-svc profile by id",
                 "parameters": [
                     {
                         "type": "string",

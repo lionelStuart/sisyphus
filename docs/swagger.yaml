@@ -384,7 +384,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Get user profile by id
+      summary: Get user-svc profile by id
       tags:
       - UserController
 swagger: "2.0"

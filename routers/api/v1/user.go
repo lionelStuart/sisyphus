@@ -1,18 +1,17 @@
 package v1
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"sisyphus/common/app"
 	"sisyphus/common/ecode"
-	userService "sisyphus/service/user"
+	"sisyphus/service/user-svc/handler"
 )
 
 type UserController struct {
 }
 
-// @Summary Get user profile by id
+// @Summary Get user-svc profile by id
 // @Tags UserController
 // @Produce  json
 // @Param id path string true "ID"
@@ -30,9 +29,9 @@ func (c *UserController) GetUserProfile(ctx *gin.Context) {
 		return
 	}
 
-	userSvc := userService.User{ID: id}
+	userSvc := handler.User{ID: id}
 	profile, err := userSvc.GetProfile()
-	fmt.Printf("yesid %d %+v \n", id, profile)
+
 	if err != nil {
 		ginX.JSON(http.StatusBadRequest, ecode.ERROR_NOT_EXIST_USER, nil)
 		return

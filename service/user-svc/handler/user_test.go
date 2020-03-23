@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
@@ -19,7 +19,7 @@ func TestUser_Add(t *testing.T) {
 	Convey("setup", t, func() {
 		setupSuite()
 
-		Convey("test add user", func() {
+		Convey("test add user-svc", func() {
 			user := User{
 				Username: "jim",
 				Password: "pass123",
@@ -44,7 +44,7 @@ func TestUser_EditProfile(t *testing.T) {
 	Convey("setup", t, func() {
 		setupSuite()
 
-		Convey("test add user", func() {
+		Convey("test add user-svc", func() {
 			user := User{
 				ID: "bnxfujkceyryy",
 				Profile: Profile{

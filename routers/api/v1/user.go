@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sisyphus/common/app"
 	"sisyphus/common/ecode"
-	"sisyphus/service/user-svc/handler"
+	"sisyphus/service/user-svc/svc"
 )
 
 type UserController struct {

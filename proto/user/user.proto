@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package sisyphus.user.svc.service;
+
+service UserSvc{
+    rpc AddUser (AddUserRequest) returns(AddUserResponse) {
+    }
+
+}
+
+message AddUserRequest {
+    User User = 1;
+}
+
+message AddUserResponse {
+    bool success = 1;
+    Error error = 2;
+    string id = 3;
+}
+
+message Error {
+    int32 code =1;
+    string detail = 2;
+}
+
+message User {
+    string id = 1;
+    string username = 2;
+    string password = 3;
+    string email = 4;
+    string phone = 5;
+    int32 state = 6;
+
+    Profile profile = 7;
+}
+
+message Profile {
+    string nickname = 1;
+    int32 age = 2;
+    string gender = 3;
+    string address = 4;
+}
+
+
+
